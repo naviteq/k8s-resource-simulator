@@ -25,7 +25,6 @@ The CPU and Memory Load Simulator is a simple C application designed to simulate
 Below is an example of a Kubernetes Pod configuration using the spurin/cpu-mem-simulator image:
 
 ```yaml
-Copy code
 apiVersion: v1
 kind: Pod
 metadata:
