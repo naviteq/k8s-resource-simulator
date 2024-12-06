@@ -44,6 +44,11 @@ kubectl apply -f cpu-mem-simulator-pod.yaml
 
 This will create a Pod that simulates 200 millicores of CPU usage and allocates 100 MiB of memory, closely respecting the Kubernetes resource requests and limits.
 
+## Available Images
+
+- **Minimal (scratch-based)**: `spurin/cpu-mem-simulator:latest`
+- **Ubuntu**: `spurin/cpu-mem-simulator:ubuntu`
+
 ## Contributing
 
 Contributions to improve the CPU and Memory Load Simulator are welcome. Please feel free to submit pull requests or open issues to discuss proposed changes.

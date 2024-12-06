@@ -1,5 +1,5 @@
 # Stage 1: Build the application using Alpine
-FROM alpine:latest as builder
+FROM alpine:latest AS builder
 
 # Install build dependencies
 RUN apk add --no-cache gcc musl-dev libc-dev
@@ -12,11 +12,12 @@ COPY cpu_mem_simulator.c .
 # Compile the application statically
 RUN gcc -static -o cpu_mem_simulator cpu_mem_simulator.c
 
-# Stage 2: Create the final minimal image
-FROM scratch
-
-# Copy the compiled binary from the builder stage
+# Stage 2a: Create the minimal scratch based image
+FROM scratch:latest AS final_scratch
 COPY --from=builder /app/cpu_mem_simulator .
+ENTRYPOINT ["./cpu_mem_simulator"]
 
-# Set the binary as the entrypoint
+# Stage 2b: Create a ubuntu based image
+FROM ubuntu:latest AS final_ubuntu
+COPY --from=builder /app/cpu_mem_simulator .
 ENTRYPOINT ["./cpu_mem_simulator"]
