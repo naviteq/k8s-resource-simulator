@@ -1,0 +1,27 @@
+---
+name: Release
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+
+jobs:
+  docker:
+    uses: naviteq/github-actions/.github/workflows/docker-build.yaml@main
+    with:
+      REGISTRY: ghcr.io
+      DOCKER_CONTEXT: .
+      IMAGE: ${{ github.repository }}
+      USERNAME: ${{ github.actor }}
+    secrets:
+      TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  helm:
+    uses: naviteq/github-actions/.github/workflows/helm-release.yaml@main
+    needs: [docker]
+    with:
+      CHART_LOCATION: helm
+      PUSH_TO_GITHUB: true
+      UPDATE_BRANCH: main
+    secrets:
+      TOKEN: ${{ secrets.PROJECT_GITHUB_TOKEN }}

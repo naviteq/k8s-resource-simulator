@@ -1,0 +1,31 @@
+---
+
+name: Pull request code validation and building (Main branch)
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+    branches:
+      - main
+
+jobs:
+  docker:
+    uses: naviteq/github-actions/.github/workflows/docker-build.yaml@main
+    with:
+      REGISTRY: ghcr.io
+      DOCKER_CONTEXT: .
+      IMAGE: ${{ github.repository }}
+      USERNAME: ${{ github.actor }}
+    secrets:
+      TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  helm:
+    uses: naviteq/github-actions/.github/workflows/helm-release.yaml@main
+    needs: [docker]
+    with:
+      CHART_LOCATION: helm
+    secrets:
+      TOKEN: ${{ secrets.GITHUB_TOKEN }}
