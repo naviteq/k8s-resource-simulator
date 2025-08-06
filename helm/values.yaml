@@ -41,11 +41,8 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
-env:
-  - name: CPU_MILLICORES
-    value: '{{ (required  "Please specify CPU requests in milli-cores format!" .Values.resources.requests.cpu) | replace "m" "" }}'
-  - name: MEMORY_MIB
-    value: '{{ (required "Please specify Memory requests in Mi format!" .Values.resources.requests.memory ) | replace "Mi" "" }}'
+cpuMilicores: ""
+memoryMi: ""
 
 volumes: []
 volumeMounts: []

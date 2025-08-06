@@ -38,9 +38,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - "-millicores"
-            - "$(CPU_MILLICORES)"
+            - {{ ((toString .Values.cpuMilicores) | default .Values.resources.requests.cpu) | replace "m" ""  | quote }}
             - "-MiB"
-            - "$(MEMORY_MIB)"
+            - {{ ((toString .Values.memoryMi) | default .Values.resources.requests.memory) | replace "Mi" ""  | quote }}
           env:
             {{- tpl (toYaml .Values.env | nindent 12) . }}
           resources:
