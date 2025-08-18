@@ -44,6 +44,12 @@ autoscaling:
 cpuMilicores: ""
 memoryMi: ""
 
+# Extra containers (as side-cars)
+# extraContainers: 
+# - name: rabbitmq-consumer
+#   image: quay.io/lib/python:3.11
+extraContainers: []
+
 volumes: []
 volumeMounts: []
 
