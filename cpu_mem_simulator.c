@@ -76,12 +76,13 @@ int main(int argc, char *argv[]) {
     }
 
     // Memory allocation
-    char *memory = malloc(memory_in_MiB * 1024 * 1024);
+    size_t bytes = (size_t)memory_in_MiB * 1024ULL * 1024ULL;
+    char *memory = malloc(bytes);
     if (memory == NULL) {
-        fprintf(stderr, "Failed to allocate memory.\n");
+        fprintf(stderr, "Failed to allocate %zu bytes.\n", bytes);
         return 1;
     }
-    memset(memory, 0, memory_in_MiB * 1024 * 1024);
+    memset(memory, 0, bytes);
 
     printf("Simulating %d millicores and allocating %d MiB of memory indefinitely...\n", millicores, memory_in_MiB);
     simulate_cpu_load(millicores);
