@@ -7,7 +7,7 @@ on:
 
 jobs:
   docker:
-    uses: naviteq/github-actions/.github/workflows/docker-build.yaml@main
+    uses: naviteq/github-actions/.github/workflows/docker-build.yaml@5b8826cfc79c3a060cec9b2406886a248ee23fef  # v1.20.9
     with:
       REGISTRY: ghcr.io
       DOCKER_CONTEXT: .
@@ -17,7 +17,7 @@ jobs:
       TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   helm:
-    uses: naviteq/github-actions/.github/workflows/helm-release.yaml@main
+    uses: naviteq/github-actions/.github/workflows/helm-release-github.yaml@5b8826cfc79c3a060cec9b2406886a248ee23fef  # v1.20.9
     needs: [docker]
     with:
       CHART_LOCATION: helm
