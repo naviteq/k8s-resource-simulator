@@ -1,0 +1,6 @@
+dependencies:
+- name: naviteq-library-chart
+  repository: oci://ghcr.io/naviteq/helm-library
+  version: 0.0.3
+digest: sha256:01f0900622415b49b87f6645feeb3657b6beef522649b833ab58fde6e15e3eaa
+generated: "2026-05-11T17:30:14.506131+02:00"

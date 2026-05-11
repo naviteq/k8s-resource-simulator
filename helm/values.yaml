@@ -1,30 +1,33 @@
 ---
-replicaCount: 1
+# Values for k8s-resource-simulator.
+# This chart consumes naviteq-library-chart as a dependency and reduces its own
+# templates to thin wrappers that include `library.app`. Library defaults are
+# imported via `import-values: [defaults]` in Chart.yaml — only override below
+# what differs from the library's defaults.
+#
+# For the full set of available values, see:
+#   https://github.com/naviteq/helm-library/blob/main/chart/README.md
+
+## @section Image
+
 image:
-  repository: ghcr.io/naviteq/k8s-resource-simulator
+  registry: ghcr.io
+  repository: naviteq/k8s-resource-simulator
   pullPolicy: IfNotPresent
+  ## Defaults to .Chart.AppVersion when empty
   tag: ""
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
-serviceAccount:
-  create: false
-  annotations: {}
-  name: ""
+## @section Container args
+##
+## The simulator binary takes -millicores and -MiB flags. Keep these in sync
+## with resources.requests below — there is no auto-derivation in this chart.
+args:
+  - "-millicores"
+  - "500"
+  - "-MiB"
+  - "512"
 
-podAnnotations: {}
-podLabels: {}
-podSecurityContext: {}
-  # fsGroup: 2000
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+## @section Resources
 
 resources:
   requests:
@@ -33,28 +36,87 @@ resources:
   limits:
     memory: 512Mi
 
-# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+## @section Service (disabled)
+##
+## The library renders a Service only when both `ports` and `service.ports` are
+## non-empty. The simulator does not need network exposure, so both are emptied
+## to suppress Service rendering.
+ports: []
+service:
+  ports: []
+
+## @section PodDisruptionBudget (disabled)
+##
+## The library defaults `pdb.create: true`. The pre-migration chart did not
+## render a PDB, so we keep that behavior here to make the helm template diff
+## minimal. Enabling a PDB can be a follow-up change.
+pdb:
+  create: false
+
+## @section Autoscaling
+##
+## Maps to the library's autoscaling schema. Note the renamed targets:
+## targetCPUUtilizationPercentage → targetCPU
+## targetMemoryUtilizationPercentage → targetMemory
+
 autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 3
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 80
+  targetCPU: 80
+  targetMemory: 80
 
-cpuMilicores: ""
-memoryMi: ""
+## @section ServiceAccount
+##
+## Matches the library's serviceAccount schema. Defaults to not creating one
+## (uses the namespace's default ServiceAccount).
+serviceAccount:
+  create: false
+  annotations: {}
+  name: ""
 
-# Extra containers (as side-cars)
-# extraContainers: 
-# - name: rabbitmq-consumer
-#   image: quay.io/lib/python:3.11
-extraContainers: []
+## @section Sidecars (was `extraContainers` in the old chart)
+##
+## Example:
+## sidecars:
+##   - name: rabbitmq-consumer
+##     image: quay.io/lib/python:3.11
+sidecars: []
 
-volumes: []
-volumeMounts: []
+## @section Environment variables (was `env` in the old chart)
+##
+## Example:
+## envVars:
+##   - name: LOG_LEVEL
+##     value: debug
+envVars: null
+
+## @section Extra volumes / mounts (were `volumes` / `volumeMounts` in the old chart)
+
+extraVolumes: []
+extraVolumeMounts: []
+
+## @section Scheduling
 
 nodeSelector: {}
-
 tolerations: []
-
 affinity: {}
+
+## @section Security contexts
+##
+## Pod-level. Library wraps this with an `enabled` toggle.
+podSecurityContext:
+  enabled: false
+  # fsGroup: 2000
+
+## Container-level (was `securityContext` in the old chart). Library renames it
+## to `containerSecurityContext` for clarity.
+containerSecurityContext:
+  enabled: false
+  # runAsUser: 1001
+  # runAsNonRoot: true
+
+## @section Pod labels and annotations
+
+podAnnotations: {}
+podLabels: {}
