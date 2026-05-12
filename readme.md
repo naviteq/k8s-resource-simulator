@@ -98,7 +98,9 @@ helm install simulator-hpa \
   --version 0.2.0 \
   -n simulator-tests --create-namespace \
   -f helm/examples/hpa.yaml
+```
 
+```bash
 kubectl get hpa -n simulator-tests -w
 ```
 
@@ -118,8 +120,13 @@ helm install simulator-oom \
   --version 0.2.0 \
   -n simulator-tests --create-namespace \
   -f helm/examples/oom.yaml
+```
 
+```bash
 kubectl get pods -n simulator-tests
+```
+
+```bash
 kubectl get pod -n simulator-tests -l app.kubernetes.io/instance=simulator-oom \
   -o jsonpath='{.items[0].status.containerStatuses[0].lastState}' | jq
 ```
@@ -142,7 +149,9 @@ helm install simulator-karpenter \
   --version 0.2.0 \
   -n simulator-tests --create-namespace \
   -f helm/examples/karpenter.yaml
+```
 
+```bash
 watch 'kubectl get nodes -o wide; echo "---"; kubectl get pods -n simulator-tests -o wide'
 ```
 
@@ -161,6 +170,7 @@ The simulator's container image is published to **GitHub Container Registry (GHC
 | Registry | `ghcr.io` |
 | Image | `ghcr.io/naviteq/k8s-resource-simulator` |
 | Tag format | `MAJOR.MINOR.PATCH` (no `v` prefix), plus moving tags `MAJOR.MINOR` and `MAJOR` |
+| Platforms | `linux/amd64`, `linux/arm64` (multi-arch manifest) |
 | Available tags | See [GHCR package page](https://github.com/naviteq/k8s-resource-simulator/pkgs/container/k8s-resource-simulator) |
 
 Releases are automated via [release-please](https://github.com/googleapis/release-please): merges to `main` with Conventional Commits accumulate, then a release PR bumps `Chart.yaml`'s `version`/`appVersion` and tags `vX.Y.Z`. The tag triggers [`.github/workflows/release.yaml`](./.github/workflows/release.yaml), which builds and pushes the multi-arch image to GHCR and the Helm chart to `oci://ghcr.io/naviteq/k8s-resource-simulator/k8s-resource-simulator`.
