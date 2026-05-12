@@ -1,0 +1,29 @@
+---
+# OOM recipe — force the simulator to allocate more memory than the K8s limit.
+#
+# Limit is 100Mi, but the simulator is told to allocate 200 MiB via args.
+# Once the simulator goes above 100Mi, the kernel kills the container.
+# Pod status reports OOMKilled.
+
+image:
+  registry: ghcr.io
+  repository: naviteq/k8s-resource-simulator
+  tag: "0.2.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    memory: 100Mi
+
+# Override auto-derivation — tell the simulator to allocate 200 MiB.
+args:
+  - "-millicores"
+  - "100"
+  - "-MiB"
+  - "200"
+
+autoscaling:
+  enabled: false

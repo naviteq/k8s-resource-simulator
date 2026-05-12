@@ -1,0 +1,32 @@
+---
+# Karpenter recipe — schedule more pods than the existing cluster can fit,
+# forcing Karpenter to provision new EC2 nodes.
+#
+# 10 replicas × 1 CPU + 1Gi memory request each = 10 CPU / 10 Gi total demand.
+# Most likely exceeds free capacity on the current EC2 nodes, leaving some
+# pods Pending. Karpenter sees the Pending pods and provisions a new node
+# (or scales existing ones) to fit them.
+
+image:
+  registry: ghcr.io
+  repository: naviteq/k8s-resource-simulator
+  tag: "0.2.0"
+  pullPolicy: IfNotPresent
+
+replicaCount: 10
+
+resources:
+  requests:
+    cpu: 1000m
+    memory: 1Gi
+  limits:
+    memory: 1Gi
+
+args:
+  - "-millicores"
+  - "100"
+  - "-MiB"
+  - "256"
+
+autoscaling:
+  enabled: false

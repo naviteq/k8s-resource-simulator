@@ -1,0 +1,33 @@
+---
+# HPA recipe — force the simulator to use 5x its CPU request so HPA scales out.
+#
+# Pod requests 100m CPU but the simulator binary is told to consume 500m via
+# the explicit args below (overriding the chart's default auto-derivation).
+# With a 50% target, observed utilization (~500%) triggers HPA scale-up.
+
+image:
+  registry: ghcr.io
+  repository: naviteq/k8s-resource-simulator
+  tag: "0.2.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 128Mi
+
+# Override the chart's auto-derived args — force CPU usage above request.
+args:
+  - "-millicores"
+  - "500"
+  - "-MiB"
+  - "64"
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPU: 50
+  targetMemory: 80
