@@ -199,7 +199,7 @@ helm install <release> \
 
 - **Maximum memory request** — the simulator calls `malloc(MiB * 1024 * 1024)` once at startup. Practical ceiling is whatever the container's memory limit allows. Above a few GiB you may see allocation failures.
 - **cgroups v1 vs v2** — the simulator does not read cgroup limits itself; it consumes exactly the millicores/MiB you tell it to. The kernel enforces K8s limits identically on both cgroup versions (kill on memory excess, throttle on CPU excess). The OOM recipe reproduces the same way on either.
-- **Image pull errors with `:vX.Y.Z` tag** — Docker image tags do **not** include the `v` prefix even though git tags do (`v0.2.0` git tag → `0.2.0` image). Use `image.tag: "0.2.0"` or leave empty so the chart falls back to `appVersion`.
+- **Image pull errors with `:vX.Y.Z` tag** — Docker image tags do **not** include the `v` prefix even though git tags do (`v0.2.0` git tag → `0.2.0` image). Set `image.tag: "0.2.0"` explicitly (without the `v`). Leaving `image.tag: ""` falls back to `appVersion` which currently still carries the `v` and will fail to pull.
 - **Helm 4 OCI mediatype error** — Helm 4 cannot read charts pushed by Helm 3. Use Helm 3 (≥ 3.12) to install this chart.
 - **OCI install URL** — the chart-name suffix is required: `oci://ghcr.io/naviteq/k8s-resource-simulator/k8s-resource-simulator`. Omitting the trailing `k8s-resource-simulator` returns the mediatype error above.
 
