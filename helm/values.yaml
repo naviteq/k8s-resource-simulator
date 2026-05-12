@@ -19,13 +19,13 @@ image:
 
 ## @section Container args
 ##
-## The simulator binary takes -millicores and -MiB flags. Keep these in sync
-## with resources.requests below — there is no auto-derivation in this chart.
+## The simulator binary takes -millicores and -MiB flags. These are derived
+## from resources.requests below via Helm tpl expressions — set resources only.
 args:
   - "-millicores"
-  - "500"
+  - '{{ .Values.resources.requests.cpu | replace "m" "" }}'
   - "-MiB"
-  - "512"
+  - '{{ .Values.resources.requests.memory | replace "Mi" "" }}'
 
 ## @section Resources
 
