@@ -2,8 +2,8 @@ apiVersion: v2
 name: k8s-resource-simulator
 description: Naviteq K8S resource simulator
 type: application
-version: 0.2.0
-appVersion: v0.2.0
+version: 0.2.1
+appVersion: v0.2.1
 dependencies:
   - name: naviteq-library-chart
     version: 0.0.3
