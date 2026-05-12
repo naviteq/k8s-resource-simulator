@@ -3,7 +3,8 @@
   "extends": ["config:recommended"],
   "enabledManagers": [
     "github-actions",
-    "dockerfile"
+    "dockerfile",
+    "helmv3"
   ],
   "packageRules": [
     {
@@ -13,6 +14,10 @@
     {
       "matchManagers": ["dockerfile"],
       "groupName": "dockerfile base image updates"
+    },
+    {
+      "matchManagers": ["helmv3"],
+      "groupName": "helm chart updates"
     }
   ]
 }

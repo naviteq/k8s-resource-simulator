@@ -4,3 +4,9 @@ description: Naviteq K8S resource simulator
 type: application
 version: 0.1.2
 appVersion: v0.1.2
+dependencies:
+  - name: naviteq-library-chart
+    version: 0.0.3
+    repository: oci://ghcr.io/naviteq/helm-library
+    import-values:
+      - defaults
